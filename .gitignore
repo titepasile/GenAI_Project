@@ -1,0 +1,17 @@
+# Virtuelle Umgebung
+.venv/
+
+# Geheimnisse (API-Keys)
+.env
+
+# Python-Zwischendateien
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Betriebssystem / Editor
+.DS_Store
+Thumbs.db
+.vscode/
