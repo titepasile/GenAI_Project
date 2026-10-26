@@ -1,6 +1,11 @@
 langgraph
 langchain
 langchain-openai
+langchain-mcp-adapters
+mcp
 langsmith
 python-dotenv
+scikit-learn
+gradio>=6
 ipykernel
+ipywidgets

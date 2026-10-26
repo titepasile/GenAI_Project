@@ -1,13 +1,13 @@
-# Swiss Agent (LangGraph)
+# DIVA – Digitaler Interner Verwaltungsassistent
 
-Ein Chatbot-Agent, der mit LangGraph in einem Jupyter Notebook gebaut wird.
-Das Hauptnotebook ist `05_swiss_agent_langgraph.ipynb`.
+Ein Chatbot-Agent für Mitarbeitende, gebaut mit LangGraph in einem Jupyter Notebook, mit Chat-Oberfläche (Gradio).
+Das Hauptnotebook ist `diva_agent.ipynb`. Zwei Classifier entscheiden (zuständig? vertraulich?), Tools und ein MCP-Server liefern die Fakten.
 
 ---
 
 ## Inhalt
 
-- [Swiss Agent (LangGraph)](#swiss-agent-langgraph)
+- [DIVA – Digitaler Interner Verwaltungsassistent](#diva--digitaler-interner-verwaltungsassistent)
   - [Inhalt](#inhalt)
   - [1. Voraussetzungen](#1-voraussetzungen)
   - [2. Einmaliges Setup](#2-einmaliges-setup)
@@ -30,7 +30,7 @@ Das Hauptnotebook ist `05_swiss_agent_langgraph.ipynb`.
 - **Python 3.13** (alle im Team nutzen dieselbe Version)
 - **VS Code** mit den Erweiterungen **Python** und **Jupyter**
 - **Git**
-- Ein **LiteLLM-API-Key** (Pflicht, wird vom Projektverantwortlichen bereitgestellt)
+- Ein **API-Key für das Modell** (Pflicht). Standard ist das kostenlose `gpt-oss-120b` bei Groq: Key ohne Kreditkarte auf console.groq.com/keys
 - Optional: ein kostenloses **LangSmith-Konto** für das Tracing (smith.langchain.com)
 
 Python-Version prüfen:
@@ -141,32 +141,34 @@ API-Keys sind geheim. Sie dürfen **nie** im Code, im Notebook oder in Git lande
 
    | Variable | Pflicht? | Wofür |
    |---|---|---|
-   | `LITELLM_API_KEY` | Ja | Zugriff auf das Modell über den LiteLLM-Proxy |
+   | `LLM_API_KEY` | Ja | Zugriff auf das Modell (Groq, Mistral, Gemini oder der Kurs-Proxy). Der alte Name `LITELLM_API_KEY` geht weiterhin |
+   | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Nur nötig, um vom Standard (Groq `openai/gpt-oss-120b`) auf ein anderes Modell zu wechseln. Beispiele stehen in `.env.example` |
    | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. |
 
 3. Speichern. Fertig.
 
 Die Datei `.env` steht in der `.gitignore` und wird deshalb nicht hochgeladen.
 
-Das Notebook liest die Keys automatisch mit `load_dotenv()`. Fehlt `LITELLM_API_KEY`, fragt es beim Ausführen danach (Eingabefeld).
+Das Notebook liest die Keys automatisch mit `load_dotenv()`. Fehlt der Key, fragt es beim Ausführen danach (Eingabefeld).
 
-Modellname und Server-Adresse (`LLM_MODEL`, `LLM_BASE_URL`) stehen direkt im Notebook und müssen nicht in die `.env`.
+Das Notebook hat Standardwerte für Modell und Server-Adresse. Wer wechseln will, ändert nur die `.env`, nicht den Code.
 
 ---
 
 ## 4. Notebook starten
 
-1. `05_swiss_agent_langgraph.ipynb` in VS Code öffnen.
+1. `diva_agent.ipynb` in VS Code öffnen.
 2. Oben rechts auf **«Kernel auswählen»** klicken.
 3. **«Python-Umgebungen»** wählen, dann den Eintrag mit **`.venv`**.
    Falls VS Code fragt, ob `ipykernel` installiert werden soll: **Ja**.
 4. Die Setup-Zellen von oben nach unten ausführen (`Shift + Enter`). Die erste Code-Zelle (`%pip install -r requirements.txt`) installiert die Pakete nochmals in den gewählten Kernel. Das ist gewollt und stellt sicher, dass alle denselben Stand haben.
-5. Die Verbindungstest-Zelle (`llm.invoke("Antworte mit einem Wort: bereit?")`) muss eine Antwort liefern. Dann ist alles korrekt eingerichtet.
+5. Die Zelle `check_model()` muss dreimal etwas Sinnvolles liefern (Antwort, Tool Calling ✅, Strukturierte Ausgabe ✅). Dann ist alles korrekt eingerichtet.
 6. Danach die restlichen Zellen der Reihe nach ausführen.
+7. **Chat-Oberfläche:** Die letzte Code-Zelle (`demo.launch(...)`) startet DIVA im Browser (http://127.0.0.1:7860). Beenden mit `demo.close()`.
 
 Bei Änderungen in `.env` muss der Kernel neu gestartet werden (*Restart* oben im Notebook) und die Zellen müssen erneut laufen.
 
-> **Hinweis:** Die Grafik des Graphen (Schritt 8) wird über das Internet erzeugt. Ohne Internetverbindung fehlt sie, der Rest funktioniert.
+> **Hinweis:** Die Grafik des Graphen wird über das Internet erzeugt. Ohne Internetverbindung gibt das Notebook stattdessen den Mermaid-Text aus, der Rest funktioniert.
 
 ---
 
@@ -236,7 +238,14 @@ pip freeze > requirements.txt
 ├── .env                            # echte API-Keys (nicht in Git)
 ├── .env.example                    # Vorlage für .env
 ├── .gitignore                      # Dateien, die Git ignoriert
-├── 05_swiss_agent_langgraph.ipynb  # Hauptnotebook
+├── diva_agent.ipynb                # Hauptnotebook: Classifier, Tools, Graph, Chat-Oberfläche
+├── diva_mcp_server.py              # MCP-Server: liefert die zuständige HR-Ansprechperson
+├── docs/                           # Firmendokumente (.md), aktuell erfundene Beispiele
+│   ├── personalreglement.md
+│   └── merkblatt_austritt.md
+├── Projektbeschrieb.md             # Projektbeschrieb
 ├── README.md                       # diese Anleitung
 └── requirements.txt                # benötigte Pakete
 ```
+
+**Eigene Dokumente verwenden:** Jede `.md`-Datei in `docs/` mit einer Titelzeile (`# Titel`) und Abschnitten (`## Überschrift`) wird automatisch durchsucht. Danach das Notebook neu starten.
