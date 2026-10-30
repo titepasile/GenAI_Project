@@ -18,4 +18,7 @@ Thumbs.db
  
 # MCP-Log (wird vom Notebook unter Windows erzeugt)
 mcp_stderr.log
- 
+
+data/*
+
+!data/examples/
