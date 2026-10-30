@@ -38,4 +38,5 @@ def get_hr_contact(category: str) -> dict:
  
  
 if __name__ == "__main__":
-    mcp.run()  # Kommunikation über stdio
+    mcp.run()
+    
