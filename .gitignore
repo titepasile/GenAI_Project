@@ -22,3 +22,5 @@ mcp_stderr.log
 data/*
 
 !data/examples/
+
+.diva_index/

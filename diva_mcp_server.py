@@ -10,12 +10,15 @@ mcp = FastMCP("diva")
  
 # Beispieldaten – später durch das echte HR-Kontaktverzeichnis ersetzen
 HR_CONTACTS = {
-    "ferien":      {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
-    "arbeitszeit": {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
-    "lohn_spesen": {"name": "Marco Keller",        "email": "m.keller@firma.ch"},
-    "absenzen":    {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
-    "kuendigung":  {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
-    "verhalten":   {"name": "Vertrauensstelle HR", "email": "vertrauen@firma.ch"},
+    "ferien":          {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
++    "arbeitszeit":     {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
++    "lohn_spesen":     {"name": "Marco Keller",        "email": "m.keller@firma.ch"},
++    "absenzen":        {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
++    "kuendigung":      {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
++    "verhalten":       {"name": "Vertrauensstelle HR", "email": "vertrauen@firma.ch"},
++    "weiterbildung":   {"name": "Lea Brunner",         "email": "l.brunner@firma.ch"},
++    "informatik":      {"name": "ICT-Servicedesk",     "email": "ict@firma.ch"},
++    "arbeitskleidung": {"name": "Thomas Steiner",      "email": "t.steiner@firma.ch"},
 }
 GENERAL_HR = {"name": "HR-Team", "email": "hr@firma.ch"}
  
@@ -25,7 +28,8 @@ def get_hr_contact(category: str) -> dict:
     """Liefert die zuständige HR-Ansprechperson (Name und E-Mail) zu einem Thema.
  
     Mögliche Themen: ferien, arbeitszeit, lohn_spesen, absenzen (inkl. Krankheit,
-    Mutterschaft, Vaterschaft), kuendigung, verhalten (Konflikte, Mobbing, Belästigung).
+    Mutterschaft, Vaterschaft), kuendigung, verhalten (Konflikte, Mobbing, Belästigung), 
+    weiterbildung, informatik (ICT, Passwörter, Mobiltelefon), arbeitskleidung.
     Gibt es für ein Thema keinen Eintrag, kommt die allgemeine HR-Adresse zurück
     (found=false). Erfinde nie eine andere Adresse.
     """
@@ -39,4 +43,3 @@ def get_hr_contact(category: str) -> dict:
  
 if __name__ == "__main__":
     mcp.run()
-    

@@ -1,0 +1,13 @@
+{
+  "_info": "Testfragen zu den erfundenen Beispieldokumenten in diesem Ordner. Format wie data/testfragen.json (siehe Notebook, Abschnitt 12).",
+  "fragen": [
+    {"set": "tuning", "typ": "fakt", "frage": "Wann ist Zahltag?", "erwartet": "Am 25. des Monats", "quelle": ["Personalreglement der Beispiel AG", "Art. 4"], "enthaelt": ["25."]},
+    {"set": "tuning", "typ": "fakt", "frage": "Wie viele Wochen Mutterschaftsurlaub gibt es?", "erwartet": "16 Wochen bei vollem Lohn", "quelle": ["Personalreglement der Beispiel AG", "Art. 9"], "enthaelt": ["16"]},
+    {"set": "tuning", "typ": "rueckfrage", "frage": "Wie viele Ferientage habe ich?", "erwartet": "Rückfrage nach Dienstjahren bzw. Pensum", "quelle": ["Personalreglement der Beispiel AG", "Art. 6"], "enthaelt": ["?"]},
+    {"set": "tuning", "typ": "nicht_gefunden", "frage": "Gibt es ein Firmenfitnessabo?", "erwartet": "Steht nicht in den Dokumenten", "quelle": null, "enthaelt": ["nicht", "kein"]},
+    {"set": "tuning", "typ": "vertraulich", "frage": "Ein Kollege macht mir seit Wochen anzügliche Bemerkungen.", "erwartet": "HR-Weg mit E-Mail-Entwurf", "quelle": null, "enthaelt": []},
+    {"set": "tuning", "typ": "nicht_zustaendig", "frage": "Wie wird das Wetter morgen?", "erwartet": "Absage", "quelle": null, "enthaelt": []},
+    {"set": "test", "typ": "fakt", "frage": "Wie viel Homeoffice ist erlaubt?", "erwartet": "Bis zu zwei Tage pro Woche nach Absprache", "quelle": ["Personalreglement der Beispiel AG", "Art. 3"], "enthaelt": ["zwei", "2"]},
+    {"set": "test", "typ": "fakt", "frage": "Wird ein Arbeitszeugnis ausgestellt, wenn ich gehe?", "erwartet": "Ja, auf Verlangen, in der Regel am letzten Arbeitstag", "quelle": ["Merkblatt Austritt der Beispiel AG", "Schritt 4"], "enthaelt": ["Verlangen", "letzten Arbeitstag"]}
+  ]
+}

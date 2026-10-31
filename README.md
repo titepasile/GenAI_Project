@@ -17,10 +17,11 @@ Das Hauptnotebook ist `diva_agent.ipynb`. Zwei Classifier entscheiden (zuständi
     - [Schritt 4: Umgebung aktivieren](#schritt-4-umgebung-aktivieren)
     - [Schritt 5: Pakete installieren](#schritt-5-pakete-installieren)
   - [3. API-Keys einrichten](#3-api-keys-einrichten)
-  - [4. Notebook starten](#4-notebook-starten)
-  - [5. Täglicher Ablauf](#5-täglicher-ablauf)
-  - [6. Zusammenarbeit mit Git](#6-zusammenarbeit-mit-git)
-  - [7. Häufige Probleme](#7-häufige-probleme)
+  - [4. Firmendokumente einrichten](#4-firmendokumente-einrichten)
+  - [5. Notebook starten](#5-notebook-starten)
+  - [6. Täglicher Ablauf](#6-täglicher-ablauf)
+  - [7. Zusammenarbeit mit Git](#7-zusammenarbeit-mit-git)
+  - [8. Häufige Probleme](#8-häufige-probleme)
   - [Projektstruktur](#projektstruktur)
 
 ---
@@ -30,8 +31,8 @@ Das Hauptnotebook ist `diva_agent.ipynb`. Zwei Classifier entscheiden (zuständi
 - **Python 3.13** (alle im Team nutzen dieselbe Version)
 - **VS Code** mit den Erweiterungen **Python** und **Jupyter**
 - **Git**
-- Ein **API-Key für das Modell** (Pflicht). Standard ist das kostenlose `gpt-oss-120b` bei Groq: Key ohne Kreditkarte auf console.groq.com/keys
-- Optional: ein kostenloses **LangSmith-Konto** für das Tracing (smith.langchain.com)
+- Ein **eigener LiteLLM-Schlüssel** (Pflicht) für das Modell `gpt-5.6-luna` und die Dokumentensuche. Erzeugen auf https://litellm.engines.aisl.science (Anmeldung mit FHNW-Konto)
+- Die **Motorex-Reglemente** (PDF) von der Projektleitung. Sie sind nicht in Git, siehe [Abschnitt 4](#4-firmendokumente-einrichten)- Optional: ein kostenloses **LangSmith-Konto** für das Tracing (smith.langchain.com)
 
 Python-Version prüfen:
 
@@ -144,6 +145,10 @@ API-Keys sind geheim. Sie dürfen **nie** im Code, im Notebook oder in Git lande
    | `LLM_API_KEY` | Ja | Zugriff auf das Modell (Groq, Mistral, Gemini oder der Kurs-Proxy). Der alte Name `LITELLM_API_KEY` geht weiterhin |
    | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Nur nötig, um vom Standard (Groq `openai/gpt-oss-120b`) auf ein anderes Modell zu wechseln. Beispiele stehen in `.env.example` |
    | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. |
+   | `LLM_API_KEY` | Ja | Dein LiteLLM-Schlüssel, für das Modell und die Dokumentensuche. Der Name `LITELLM_API_KEY` geht auch |
+   | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Standard ist `gpt-5.6-luna` auf dem LiteLLM-Server. Nur ändern, um ein anderes Modell zu verwenden (z.B. `gpt-6-luna`) |
+   | `EMBED_MODEL`, `DIVA_DOCS_DIR` | Nein | Embedding-Modell und Dokumentordner für die Suche. Die Standardwerte passen, Details in `.env.example` |
+   | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. Mit ungültigem Key gibt es bei jedem Aufruf «403 Forbidden»-Meldungen |
 
 3. Speichern. Fertig.
 
@@ -155,7 +160,28 @@ Das Notebook hat Standardwerte für Modell und Server-Adresse. Wer wechseln will
 
 ---
 
-## 4. Notebook starten
+## 4. Firmendokumente einrichten
+
+Die echten Motorex-Reglemente sind **nicht in Git**, weil das Repository öffentlich ist. Jede Person legt sie einmal selbst ab:
+
+1. Die PDFs von der Projektleitung holen.
+2. **Nur diese 13 Dateien** direkt in den Ordner `data/` kopieren (nicht in einen Unterordner):
+   `12_001` Personalreglement, `12_002`/`12_003`/`12_004` Arbeitszeitreglemente, `12_005` Spesenreglement, `12_007` Chauffeurenreglement,
+   `12_009` Arbeitskleidungsreglement, `12_010` Aus- und Weiterbildungsreglement, `12_011` Pausenregelung, `12_012` Code of Conduct (lange Fassung),
+   `12_014` ICT-Nutzungsreglement, `12_020` Code of Ethics, `41_006` Reglement Mobiltelefonie.
+   Nicht dazu gehören `12_013` (IT-Sicherheitsleitlinie, nur Bilder), `12_021` (Umweltrichtlinien), `12_022` (kurze Fassung des Code of Conduct) und `12_023` (Code of Conduct für Geschäftspartner).
+3. Optional: `testfragen.json` (Testfragen mit erwarteten Antworten) ebenfalls in `data/` legen.
+
+Beim ersten Ausführen von Abschnitt 3 im Notebook werden die Dokumente eingelesen. Das dauert **rund 5 Minuten** (die Embeddings werden auf dem LiteLLM-Server berechnet).
+Das Ergebnis wird in `.diva_index/` gespeichert, danach dauert der Start nur noch Sekunden. Neue oder geänderte PDFs in `data/` werden beim nächsten Ausführen automatisch neu eingelesen.
+
+Liegen keine PDFs in `data/`, verwendet das Notebook die erfundenen Beispieldokumente aus `data/examples/`. So läuft es auch direkt nach dem Klonen.
+
+> **Vor jedem Commit:** `git status` prüfen. Es dürfen nie PDFs, `data/testfragen.json` oder `.diva_index/` auftauchen. Die `.gitignore` verhindert das, solange die Dateien in `data/` liegen.
+
+---
+
+## 5. Notebook starten
 
 1. `diva_agent.ipynb` in VS Code öffnen.
 2. Oben rechts auf **«Kernel auswählen»** klicken.
@@ -172,8 +198,7 @@ Bei Änderungen in `.env` muss der Kernel neu gestartet werden (*Restart* oben i
 
 ---
 
-## 5. Täglicher Ablauf
-
+## 6. Täglicher Ablauf
 Bevor du loslegst:
 
 ```bash
@@ -190,13 +215,13 @@ Ein Neuaufsetzen der `.venv` ist normalerweise **nicht** nötig. VS Code erkennt
 
 ---
 
-## 6. Zusammenarbeit mit Git
+## 7. Zusammenarbeit mit Git
 
 **Grundregeln:**
 
 - Immer zuerst `git pull`, dann arbeiten.
 - Nicht gleichzeitig im selben Notebook arbeiten, sonst gibt es Konflikte.
-- **Vor jedem Commit alle Ausgaben löschen:** Im Notebook oben auf *«Alle Ausgaben löschen»* (Clear All Outputs) klicken. So bleiben die Änderungen klein und übersichtlich.
+- **Vor jedem Commit alle Ausgaben löschen:** Im Notebook oben auf *«Alle Ausgaben löschen»* (Clear All Outputs) klicken. So bleiben die Änderungen klein und übersichtlich. Das ist auch Datenschutz: Die Ausgaben enthalten Passagen aus den Motorex-Dokumenten, und das Repository ist öffentlich.
 - Keine Dateien wie `.env` oder `.venv` committen (die `.gitignore` verhindert das).
 
 **Standard-Ablauf zum Speichern der Arbeit:**
@@ -215,7 +240,7 @@ pip freeze > requirements.txt
 
 ---
 
-## 7. Häufige Probleme
+## 8. Häufige Probleme
 
 | Problem | Lösung |
 |---|---|
@@ -227,6 +252,9 @@ pip freeze > requirements.txt
 | Mac: `python` wird nicht gefunden | Auf dem Mac immer `python3` statt `python` verwenden. |
 | Key aus Versehen hochgeladen | **Sofort** beim Anbieter löschen und einen neuen erstellen. Danach Projektverantwortliche informieren. |
 | Merge-Konflikt im Notebook | Nicht selbst herumprobieren. Projektverantwortliche fragen. |
+| «Dokumentordner: data/examples» obwohl die PDFs da sind | Die PDFs liegen nicht direkt in `data/` (z.B. in einem Unterordner) oder `DIVA_DOCS_DIR` in der `.env` zeigt woanders hin. |
+| «Embeddings nicht verfügbar … nur TF-IDF» | LiteLLM-Server nicht erreichbar oder Schlüssel falsch. DIVA läuft weiter, sucht aber nur nach Wörtern. Später Abschnitt 3 erneut ausführen. |
+| PDFs ausgetauscht, DIVA kennt den neuen Inhalt nicht | Abschnitt 3 neu ausführen. Geänderte Dateien werden an ihrer Prüfsumme erkannt. Im Notfall den Ordner `.diva_index/` löschen. |
 
 ---
 
@@ -239,13 +267,19 @@ pip freeze > requirements.txt
 ├── .env.example                    # Vorlage für .env
 ├── .gitignore                      # Dateien, die Git ignoriert
 ├── diva_agent.ipynb                # Hauptnotebook: Classifier, Tools, Graph, Chat-Oberfläche
-├── diva_mcp_server.py              # MCP-Server: liefert die zuständige HR-Ansprechperson
-├── docs/                           # Firmendokumente (.md), aktuell erfundene Beispiele
-│   ├── personalreglement.md
-│   └── merkblatt_austritt.md
+├── ├── diva_mcp_server.py              # MCP-Server: liefert die zuständige HR-Ansprechperson (erfundene Kontakte)
+├── data/
+│   ├── *.pdf                       # echte Motorex-Reglemente (nicht in Git)
+│   ├── testfragen.json             # Testfragen zu den echten Reglementen (nicht in Git)
+│   └── examples/                   # erfundene Beispieldokumente und Testfragen (in Git)
+│       ├── personalreglement.md
+│       ├── merkblatt_austritt.md
+│       └── testfragen.json
+├── .diva_index/                    # Suchindex, wird automatisch erzeugt (nicht in Git)
 ├── Projektbeschrieb.md             # Projektbeschrieb
 ├── README.md                       # diese Anleitung
 └── requirements.txt                # benötigte Pakete
 ```
 
-**Eigene Dokumente verwenden:** Jede `.md`-Datei in `docs/` mit einer Titelzeile (`# Titel`) und Abschnitten (`## Überschrift`) wird automatisch durchsucht. Danach das Notebook neu starten.
+**Dokumente:** Durchsucht werden alle `.pdf`- und `.md`-Dateien direkt im Dokumentordner (`data/` oder, ohne PDFs dort, `data/examples/`).
+PDFs werden an den nummerierten Überschriften in Abschnitte geteilt, Markdown-Dateien an den Überschriften (`## …`).
