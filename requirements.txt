@@ -10,3 +10,4 @@ gradio>=6
 ipykernel
 ipywidgets
 pymupdf>=2.0
+langchain-chroma

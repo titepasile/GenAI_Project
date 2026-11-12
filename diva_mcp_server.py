@@ -11,14 +11,14 @@ mcp = FastMCP("diva")
 # Beispieldaten – später durch das echte HR-Kontaktverzeichnis ersetzen
 HR_CONTACTS = {
     "ferien":          {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
-+    "arbeitszeit":     {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
-+    "lohn_spesen":     {"name": "Marco Keller",        "email": "m.keller@firma.ch"},
-+    "absenzen":        {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
-+    "kuendigung":      {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
-+    "verhalten":       {"name": "Vertrauensstelle HR", "email": "vertrauen@firma.ch"},
-+    "weiterbildung":   {"name": "Lea Brunner",         "email": "l.brunner@firma.ch"},
-+    "informatik":      {"name": "ICT-Servicedesk",     "email": "ict@firma.ch"},
-+    "arbeitskleidung": {"name": "Thomas Steiner",      "email": "t.steiner@firma.ch"},
+    "arbeitszeit":     {"name": "Sandra Meier",        "email": "s.meier@firma.ch"},
+    "lohn_spesen":     {"name": "Marco Keller",        "email": "m.keller@firma.ch"},
+    "absenzen":        {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
+    "kuendigung":      {"name": "Nina Frei",           "email": "n.frei@firma.ch"},
+    "verhalten":       {"name": "Vertrauensstelle HR", "email": "vertrauen@firma.ch"},
+    "weiterbildung":   {"name": "Lea Brunner",         "email": "l.brunner@firma.ch"},
+    "informatik":      {"name": "ICT-Servicedesk",     "email": "ict@firma.ch"},
+    "arbeitskleidung": {"name": "Thomas Steiner",      "email": "t.steiner@firma.ch"},
 }
 GENERAL_HR = {"name": "HR-Team", "email": "hr@firma.ch"}
  
