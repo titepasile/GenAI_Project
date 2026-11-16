@@ -32,7 +32,8 @@ Das Hauptnotebook ist `diva_agent.ipynb`. Zwei Classifier entscheiden (zuständi
 - **VS Code** mit den Erweiterungen **Python** und **Jupyter**
 - **Git**
 - Ein **eigener LiteLLM-Schlüssel** (Pflicht) für das Modell `gpt-5.6-luna` und die Dokumentensuche. Erzeugen auf https://litellm.engines.aisl.science (Anmeldung mit FHNW-Konto)
-- Die **Motorex-Reglemente** (PDF) von der Projektleitung. Sie sind nicht in Git, siehe [Abschnitt 4](#4-firmendokumente-einrichten)- Optional: ein kostenloses **LangSmith-Konto** für das Tracing (smith.langchain.com)
+- Die **Motorex-Reglemente** (PDF) von der Projektleitung. Sie sind nicht in Git, siehe [Abschnitt 4](#4-firmendokumente-einrichten)
+- Optional: ein kostenloses **LangSmith-Konto** für das Tracing (smith.langchain.com)
 
 Python-Version prüfen:
 
@@ -142,13 +143,10 @@ API-Keys sind geheim. Sie dürfen **nie** im Code, im Notebook oder in Git lande
 
    | Variable | Pflicht? | Wofür |
    |---|---|---|
-   | `LLM_API_KEY` | Ja | Zugriff auf das Modell (Groq, Mistral, Gemini oder der Kurs-Proxy). Der alte Name `LITELLM_API_KEY` geht weiterhin |
-   | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Nur nötig, um vom Standard (Groq `openai/gpt-oss-120b`) auf ein anderes Modell zu wechseln. Beispiele stehen in `.env.example` |
-   | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. |
-   | `LLM_API_KEY` | Ja | Dein LiteLLM-Schlüssel, für das Modell und die Dokumentensuche. Der Name `LITELLM_API_KEY` geht auch |
-   | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Standard ist `gpt-5.6-luna` auf dem LiteLLM-Server. Nur ändern, um ein anderes Modell zu verwenden (z.B. `gpt-6-luna`) |
+   | `LITELLM_API_KEY` | Ja | Dein LiteLLM-Schlüssel, für das Modell und die Dokumentensuche. Gleicher Name wie in den Kurs-Notebooks (der ältere Name `LLM_API_KEY` geht auch) |
+   | `LLM_MODEL`, `LLM_BASE_URL` | Nein | Standard ist `gpt-5.6-luna` auf dem LiteLLM-Server. Nur setzen, um ein anderes Modell zu verwenden (z.B. `gpt-6-luna`) |
    | `EMBED_MODEL`, `DIVA_DOCS_DIR` | Nein | Embedding-Modell und Dokumentordner für die Suche. Die Standardwerte passen, Details in `.env.example` |
-   | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. Mit ungültigem Key gibt es bei jedem Aufruf «403 Forbidden»-Meldungen |
+   | `LANGSMITH_API_KEY` | Nein | Tracing in LangSmith. Ohne Key läuft das Notebook trotzdem. Mit ungültigem Key gibt es bei jedem Aufruf «403 Forbidden»-Meldungen; die Zeile dann mit `#` auskommentieren |
 
 3. Speichern. Fertig.
 
@@ -173,7 +171,7 @@ Die echten Motorex-Reglemente sind **nicht in Git**, weil das Repository öffent
 3. Optional: `testfragen.json` (Testfragen mit erwarteten Antworten) ebenfalls in `data/` legen.
 
 Beim ersten Ausführen von Abschnitt 3 im Notebook werden die Dokumente eingelesen. Das dauert **rund 5 Minuten** (die Embeddings werden auf dem LiteLLM-Server berechnet).
-Das Ergebnis wird in `.diva_index/` gespeichert, danach dauert der Start nur noch Sekunden. Neue oder geänderte PDFs in `data/` werden beim nächsten Ausführen automatisch neu eingelesen.
+Das Ergebnis (Vektordatenbank Chroma und die Entscheidungen von Gate 1) wird in `.diva_index/` gespeichert, danach dauert der Start nur noch Sekunden. Neue oder geänderte PDFs in `data/` werden beim nächsten Ausführen automatisch neu eingelesen.
 
 Liegen keine PDFs in `data/`, verwendet das Notebook die erfundenen Beispieldokumente aus `data/examples/`. So läuft es auch direkt nach dem Klonen.
 
@@ -246,7 +244,11 @@ pip freeze > requirements.txt
 |---|---|
 | `ModuleNotFoundError: No module named ...` | Meist falscher Kernel. Oben rechts im Notebook `.venv` wählen. Sonst `pip install -r requirements.txt` ausführen. |
 | `(.venv)` steht nicht im Terminal | Umgebung ist nicht aktiviert. Schritt 4 wiederholen. |
-| Verbindungstest schlägt fehl (`KeyError: 'LITELLM_API_KEY'` oder Auth-Fehler) | `.env` prüfen: Datei heisst genau `.env`, liegt im Projektordner, Key korrekt, gespeichert. Danach Kernel neu starten. |
+| Verbindungstest schlägt fehl (`KeyError: 'LITELLM_API_KEY'`, «Missing credentials» oder Auth-Fehler) | `.env` prüfen: Datei heisst genau `.env` (nicht `.env.txt`), liegt im Projektordner, Zeile `LITELLM_API_KEY=sk-…`, gespeichert. Danach Kernel neu starten. |
+| `401 … expected to start with 'sk-'` | In der `.env` steht noch ein alter Schlüssel (z.B. von Groq, beginnt mit `gsk_`). Den LiteLLM-Schlüssel eintragen, Kernel neu starten. |
+| Modell `dein-modell-hier` nicht gefunden | Die `.env` stammt aus einer alten Vorlage. Zeilen `LLM_MODEL=` und `LLM_BASE_URL=` löschen oder auskommentieren, dann gelten die Standardwerte. |
+| Viele Meldungen «LangSmith … 403 Forbidden» | Der LangSmith-Schlüssel ist ungültig. In der `.env` die Zeile `LANGSMITH_API_KEY` mit `#` auskommentieren oder einen neuen Schlüssel erzeugen (EU-Konto: zusätzlich `LANGSMITH_ENDPOINT=https://eu.api.smith.langchain.com`). |
+| «Embeddings nicht verfügbar … is not available» | Der eigene LiteLLM-Schlüssel hat keinen Zugriff auf das Embedding-Modell (Modellliste in Abschnitt 1 prüfen). Bei engines@aisl.science freischalten lassen. Bis dahin sucht DIVA nur mit TF-IDF. |
 | `.venv` erscheint nicht in der Kernel-Liste | VS Code neu laden (`Strg/Cmd + Shift + P` → «Reload Window»). Prüfen, ob `ipykernel` installiert ist: `pip install ipykernel`. |
 | Windows: Skripts sind deaktiviert | Siehe Hinweis bei Schritt 4 oder CMD statt PowerShell verwenden. |
 | Mac: `python` wird nicht gefunden | Auf dem Mac immer `python3` statt `python` verwenden. |
@@ -267,13 +269,14 @@ pip freeze > requirements.txt
 ├── .env.example                    # Vorlage für .env
 ├── .gitignore                      # Dateien, die Git ignoriert
 ├── diva_agent.ipynb                # Hauptnotebook: Classifier, Tools, Graph, Chat-Oberfläche
-├── ├── diva_mcp_server.py              # MCP-Server: liefert die zuständige HR-Ansprechperson (erfundene Kontakte)
+├── diva_mcp_server.py              # MCP-Server: liefert die zuständige HR-Ansprechperson (erfundene Kontakte)
 ├── data/
 │   ├── *.pdf                       # echte Motorex-Reglemente (nicht in Git)
 │   ├── testfragen.json             # Testfragen zu den echten Reglementen (nicht in Git)
 │   └── examples/                   # erfundene Beispieldokumente und Testfragen (in Git)
 │       ├── personalreglement.md
 │       ├── merkblatt_austritt.md
+│       ├── FAQ_Vertragsverlaengerung.md  # Testdokument mit versteckter Anweisung (Gate 1)
 │       └── testfragen.json
 ├── .diva_index/                    # Suchindex, wird automatisch erzeugt (nicht in Git)
 ├── Projektbeschrieb.md             # Projektbeschrieb
