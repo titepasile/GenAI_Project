@@ -23,6 +23,5 @@ mcp_stderr.log
 data/*
 
 !data/examples/
-!data/testfragen.json
 
 .diva_index/
