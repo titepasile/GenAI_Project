@@ -1,0 +1,13 @@
+langgraph
+langchain
+langchain-openai
+langchain-mcp-adapters
+mcp
+langsmith
+python-dotenv
+scikit-learn
+gradio>=6
+ipykernel
+ipywidgets
+pymupdf>=2.0
+langchain-chroma

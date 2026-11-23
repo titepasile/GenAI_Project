@@ -1,0 +1,27 @@
+# Virtuelle Umgebung
+.venv/
+.idea/
+
+# Geheimnisse (API-Keys)
+.env
+
+# Python-Zwischendateien
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Betriebssystem / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+ 
+# MCP-Log (wird vom Notebook unter Windows erzeugt)
+mcp_stderr.log
+
+data/*
+
+!data/examples/
+
+.diva_index/
